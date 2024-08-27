@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>API Documentation</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        margin: 0;
+        padding: 20px;
+        background-color: #ffffff;
+        color: #1a1a1a;
+      }
+      h1,
+      h2 {
+        color: #0a0a0a;
+      }
+      code {
+        background-color: #f1f1f1;
+        padding: 2px 4px;
+        border-radius: 4px;
+        color: #000000;
+      }
+      pre {
+        background-color: #2a2a2a;
+        color: #e0e0e0;
+        padding: 10px;
+        border-radius: 5px;
+        overflow-x: auto;
+      }
+      .requirement {
+        margin-bottom: 20px;
+      }
+      .requirement p {
+        margin: 5px 0;
+      }
+      a {
+        color: #0056b3;
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>API Documentation</h1>
+    <p>
+      This document provides an overview of the technical requirements and
+      implementation details for the Movie API.
+    </p>
+
+    <h2>1. Overview</h2>
+    <div class="requirement">
+      <p>
+        The API is a Node.js and Express application designed to provide movie
+        information and manage users.
+      </p>
+    </div>
+
+    <h2>2. REST Architecture</h2>
+    <div class="requirement">
+      <p>
+        The API follows REST architecture principles, with the following
+        endpoints:
+      </p>
+      <ul>
+        <li><code>GET /movies</code> - Retrieves a list of all movies.</li>
+        <li>
+          <code>GET /movies/:id</code> - Retrieves a single movie by its ID.
+        </li>
+        <li><code>POST /users</code> - Registers a new user.</li>
+        <li><code>PUT /users/:id</code> - Updates user information.</li>
+        <li><code>DELETE /users/:id</code> - Deletes a user by ID.</li>
+      </ul>
+    </div>
+
+    <h2>3. Middleware Modules</h2>
+    <div class="requirement">
+      <p>The API uses the following middleware modules:</p>
+      <ul>
+        <li><code>body-parser</code> - For parsing incoming request bodies.</li>
+        <li><code>morgan</code> - For logging HTTP requests.</li>
+        <li>
+          <code>cors</code> - To enable Cross-Origin Resource Sharing (CORS).
+        </li>
+      </ul>
+    </div>
+
+    <h2>4. Package Management</h2>
+    <div class="requirement">
+      <p>
+        The API uses a <code>package.json</code> file to manage dependencies.
+        Example:
+      </p>
+      <pre><code>{
+    "name": "movie-api",
+    "version": "1.0.0",
+    "description": "A RESTful API for movie information.",
+    "main": "index.js",
+    "dependencies": {
+        "express": "^4.17.1",
+        "mongoose": "^5.10.9",
+        "body-parser": "^1.19.0",
+        "morgan": "^1.10.0",
+        "cors": "^2.8.5"
+    },
+    "scripts": {
+        "start": "node index.js"
+    },
+    "author": "Your Name",
+    "license": "MIT"
+}</code></pre>
+    </div>
+
+    <h2>5. Database</h2>
+    <div class="requirement">
+      <p>
+        The API uses MongoDB as its database. The database schema and models are
+        defined using Mongoose.
+      </p>
+    </div>
+
+    <h2>6. Movie Information</h2>
+    <div class="requirement">
+      <p>
+        The API provides movie information in JSON format. Example response:
+      </p>
+      <pre><code>{
+    "title": "Inception",
+    "director": "Christopher Nolan",
+    "year": 2010,
+    "genre": "Science Fiction"
+}</code></pre>
+    </div>
+
+    <h2>7. Code Quality</h2>
+    <div class="requirement">
+      <p>
+        The JavaScript code is thoroughly tested and is free of errors. Please
+        use linters like ESLint to ensure code quality.
+      </p>
+    </div>
+
+    <h2>8. API Testing</h2>
+    <div class="requirement">
+      <p>
+        The API is tested using Postman. Ensure that all endpoints work as
+        expected, and responses are correct.
+      </p>
+    </div>
+
+    <h2>9. Authentication & Authorization</h2>
+    <div class="requirement">
+      <p>
+        The API includes user authentication and authorization mechanisms. JWT
+        (JSON Web Tokens) is used for securing the API endpoints.
+      </p>
+      <p>Example of protected route:</p>
+      <pre><code>app.get('/protected', authenticateJWT, (req, res) => {
+    res.json({ message: 'This is a protected route' });
+});</code></pre>
+    </div>
+
+    <h2>10. Data Validation</h2>
+    <div class="requirement">
+      <p>
+        The API includes data validation logic to ensure that incoming data is
+        correct and safe. Mongoose validators and middleware are used for this
+        purpose.
+      </p>
+    </div>
+
+    <h2>11. Security</h2>
+    <div class="requirement">
+      <p>
+        The API meets data security regulations. Sensitive data such as
+        passwords are hashed using bcrypt, and all communication is done over
+        HTTPS.
+      </p>
+    </div>
+
+    <h2>12. Source Code Management</h2>
+    <div class="requirement">
+      <p>
+        The API source code is publicly accessible and maintained on GitHub.
+        Ensure regular commits and proper versioning.
+      </p>
+    </div>
+
+    <h2>13. Deployment</h2>
+    <div class="requirement">
+      <p>
+        The API is deployed to Heroku for public access. Ensure the app is set
+        up to automatically deploy from the GitHub repository.
+      </p>
+    </div>
+  </body>
+</html>
