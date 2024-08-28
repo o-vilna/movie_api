@@ -1,10 +1,20 @@
 const express = require("express");
 morgan = require("morgan");
+const bodyParser = require("body-parser");
+methodOverride = require("method-override");
 
 const app = express();
 
-const bodyParser = require("body-parser");
-methodOverride = require("method-override");
+// Middleware Setup
+app.use(express.static("public"));
+app.use(morgan("common"));
+app.use(
+  bodyParser.urlencoded({
+    extended: true,
+  })
+);
+app.use(bodyParser.json());
+app.use(methodOverride());
 
 let topMovies = [
   {
@@ -68,10 +78,8 @@ let topMovies = [
     genre: "Fantasy Epic",
   },
 ];
-// GET USE requests
-app.use(express.static("public"));
-app.use(morgan("common"));
 
+// Routes
 app.get("/movies", (req, res) => {
   res.json(topMovies);
 });
@@ -82,25 +90,17 @@ app.get("/documentation", (req, res) => {
   res.sendFile("public/documentation.html", { root: __dirname });
 });
 
-app.use(
-  bodyParser.urlencoded({
-    extended: true,
-  })
-);
-app.use(bodyParser.json());
-app.use(methodOverride());
-
+// Error-Handling Middleware
 /*app.get("/cause-error", (req, res, next) => {
   const err = new Error("This is a simulated error!");
   err.status = 500; //
   next(err); // Передаємо помилку в middleware для обробки помилок
 });*/
-
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send("Something broke!");
 });
-//listen for requests
+// Start the server
 app.listen(8080, () => {
   console.log("your app is listening on port 8080.");
 });
