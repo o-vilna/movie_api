@@ -325,7 +325,6 @@ app.get("/users/:username/myfavorites", (req, res) => {
     return res.status(404).json({ message: "User not found." });
   }
 
-  // Повертаємо список улюблених фільмів
   res.status(200).json({
     myFavorites: user.myFavorites || [],
   });
@@ -366,7 +365,6 @@ app.delete("/users", (req, res) => {
     return res.status(400).json({ message: "Missing userId in request body." });
   }
 
-  // Знаходимо індекс користувача за userId
   const userIndex = users.findIndex((u) => u.id === userIdFromBody);
 
   if (userIndex !== -1) {
