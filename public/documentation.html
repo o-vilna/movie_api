@@ -7,192 +7,253 @@
     <style>
       body {
         font-family: Arial, sans-serif;
-        line-height: 1.6;
-        margin: 0;
-        padding: 20px;
-        background-color: #ffffff;
-        color: #1a1a1a;
+        margin: 20px;
+        background-color: #f4f4f4;
       }
-      h1,
-      h2 {
-        color: #0a0a0a;
-      }
-      code {
-        background-color: #f1f1f1;
-        padding: 2px 4px;
-        border-radius: 4px;
-        color: #000000;
-      }
-      pre {
-        background-color: #2a2a2a;
-        color: #e0e0e0;
-        padding: 10px;
-        border-radius: 5px;
-        overflow-x: auto;
-      }
-      .requirement {
+      table {
+        width: 100%;
+        border-collapse: collapse;
         margin-bottom: 20px;
       }
-      .requirement p {
-        margin: 5px 0;
+      table,
+      th,
+      td {
+        border: 1px solid #ddd;
       }
-      a {
-        color: #0056b3;
-        text-decoration: underline;
+      th,
+      td {
+        padding: 12px;
+        text-align: left;
+      }
+      th {
+        background-color: #f8f8f8;
+      }
+      h1 {
+        text-align: center;
+      }
+      pre {
+        background-color: #f8f8f8;
+        padding: 10px;
+        border: 1px solid #ddd;
       }
     </style>
   </head>
   <body>
     <h1>API Documentation</h1>
-    <p>
-      This document provides an overview of the technical requirements and
-      implementation details for the Movie API.
-    </p>
 
-    <h2>1. Overview</h2>
-    <div class="requirement">
-      <p>
-        The API is a Node.js and Express application designed to provide movie
-        information and manage users.
-      </p>
-    </div>
-
-    <h2>2. REST Architecture</h2>
-    <div class="requirement">
-      <p>
-        The API follows REST architecture principles, with the following
-        endpoints:
-      </p>
-      <ul>
-        <li><code>GET /movies</code> - Retrieves a list of all movies.</li>
-        <li>
-          <code>GET /movies/:id</code> - Retrieves a single movie by its ID.
-        </li>
-        <li><code>POST /users</code> - Registers a new user.</li>
-        <li><code>PUT /users/:id</code> - Updates user information.</li>
-        <li><code>DELETE /users/:id</code> - Deletes a user by ID.</li>
-      </ul>
-    </div>
-
-    <h2>3. Middleware Modules</h2>
-    <div class="requirement">
-      <p>The API uses the following middleware modules:</p>
-      <ul>
-        <li><code>body-parser</code> - For parsing incoming request bodies.</li>
-        <li><code>morgan</code> - For logging HTTP requests.</li>
-        <li>
-          <code>cors</code> - To enable Cross-Origin Resource Sharing (CORS).
-        </li>
-      </ul>
-    </div>
-
-    <h2>4. Package Management</h2>
-    <div class="requirement">
-      <p>
-        The API uses a <code>package.json</code> file to manage dependencies.
-        Example:
-      </p>
-      <pre><code>{
-    "name": "movie-api",
-    "version": "1.0.0",
-    "description": "A RESTful API for movie information.",
-    "main": "index.js",
-    "dependencies": {
-        "express": "^4.17.1",
-        "mongoose": "^5.10.9",
-        "body-parser": "^1.19.0",
-        "morgan": "^1.10.0",
-        "cors": "^2.8.5"
-    },
-    "scripts": {
-        "start": "node index.js"
-    },
-    "author": "Olha",
-    "license": "MIT"
-}</code></pre>
-    </div>
-
-    <h2>5. Database</h2>
-    <div class="requirement">
-      <p>
-        The API uses MongoDB as its database. The database schema and models are
-        defined using Mongoose.
-      </p>
-    </div>
-
-    <h2>6. Movie Information</h2>
-    <div class="requirement">
-      <p>
-        The API provides movie information in JSON format. Example response:
-      </p>
-      <pre><code>{
+    <table>
+      <thead>
+        <tr>
+          <th>Request Method</th>
+          <th>URL</th>
+          <th>Description</th>
+          <th>Request Body Example</th>
+          <th>Response Example</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>GET</td>
+          <td>/movies</td>
+          <td>Retrieve a list of all movies</td>
+          <td>N/A</td>
+          <td>
+            <pre>
+[
+  {
+    "id": "uuid",
     "title": "Inception",
-    "director": "Christopher Nolan",
-    "year": 2010,
-    "genre": "Science Fiction"
-}</code></pre>
-    </div>
-
-    <h2>7. Code Quality</h2>
-    <div class="requirement">
-      <p>
-        The JavaScript code is thoroughly tested and is free of errors. Please
-        use linters like ESLint to ensure code quality.
-      </p>
-    </div>
-
-    <h2>8. API Testing</h2>
-    <div class="requirement">
-      <p>
-        The API is tested using Postman. Ensure that all endpoints work as
-        expected, and responses are correct.
-      </p>
-    </div>
-
-    <h2>9. Authentication & Authorization</h2>
-    <div class="requirement">
-      <p>
-        The API includes user authentication and authorization mechanisms. JWT
-        (JSON Web Tokens) is used for securing the API endpoints.
-      </p>
-      <p>Example of protected route:</p>
-      <pre><code>app.get('/protected', authenticateJWT, (req, res) => {
-    res.json({ message: 'This is a protected route' });
-});</code></pre>
-    </div>
-
-    <h2>10. Data Validation</h2>
-    <div class="requirement">
-      <p>
-        The API includes data validation logic to ensure that incoming data is
-        correct and safe. Mongoose validators and middleware are used for this
-        purpose.
-      </p>
-    </div>
-
-    <h2>11. Security</h2>
-    <div class="requirement">
-      <p>
-        The API meets data security regulations. Sensitive data such as
-        passwords are hashed using bcrypt, and all communication is done over
-        HTTPS.
-      </p>
-    </div>
-
-    <h2>12. Source Code Management</h2>
-    <div class="requirement">
-      <p>
-        The API source code is publicly accessible and maintained on GitHub.
-        Ensure regular commits and proper versioning.
-      </p>
-    </div>
-
-    <h2>13. Deployment</h2>
-    <div class="requirement">
-      <p>
-        The API is deployed to Heroku for public access. Ensure the app is set
-        up to automatically deploy from the GitHub repository.
-      </p>
-    </div>
+    "description": "A thief...",
+    "genre": { ... },
+    "director": { ... }
+  }
+]</pre
+            >
+          </td>
+        </tr>
+        <tr>
+          <td>GET</td>
+          <td>/movies/:title</td>
+          <td>Retrieve detailed information about a movie by title</td>
+          <td>N/A</td>
+          <td>
+            <pre>
+{
+  "description": "A thief who...",
+  "genre": { "genreName": "Science Fiction", ... },
+  "director": "Christopher Nolan",
+  "imageUrl": "...",
+  "featured": true
+}</pre
+            >
+          </td>
+        </tr>
+        <tr>
+          <td>GET</td>
+          <td>/genres/:name</td>
+          <td>Retrieve genre details by name</td>
+          <td>N/A</td>
+          <td>
+            <pre>
+{
+  "genre": "Action",
+  "description": "A genre focused on..."
+}</pre
+            >
+          </td>
+        </tr>
+        <tr>
+          <td>GET</td>
+          <td>/movies/directors/:name</td>
+          <td>Retrieve details about a director by name</td>
+          <td>N/A</td>
+          <td>
+            <pre>
+{
+  "name": "Christopher Nolan",
+  "bio": "Christopher Nolan is...",
+  "birthYear": "1970"
+}</pre
+            >
+          </td>
+        </tr>
+        <tr>
+          <td>GET</td>
+          <td>/users</td>
+          <td>Retrieve a list of all users</td>
+          <td>N/A</td>
+          <td>
+            <pre>
+[
+  {
+    "id": "uuid",
+    "username": "john_doe",
+    "email": "john@example.com",
+    ...
+  }
+]</pre
+            >
+          </td>
+        </tr>
+        <tr>
+          <td>POST</td>
+          <td>/users</td>
+          <td>Register a new user</td>
+          <td>
+            <pre>
+{
+  "username": "new_user",
+  "password": "Password123!",
+  "email": "newuser@example.com",
+  "birthday": "1990-01-01"
+}</pre
+            >
+          </td>
+          <td>
+            <pre>
+{
+  "message": "User successfully created",
+  "user": { "id": "uuid", "username": "new_user", ... }
+}</pre
+            >
+          </td>
+        </tr>
+        <tr>
+          <td>PUT</td>
+          <td>/users/:username</td>
+          <td>Update an existing user's information</td>
+          <td>
+            <pre>
+{
+  "username": "updated_user",
+  "password": "NewPassword123",
+  "email": "updated_email@example.com",
+  "birthday": "1990-01-01"
+}</pre
+            >
+          </td>
+          <td>
+            <pre>
+{
+  "message": "User info successfully updated",
+  "user": { "username": "updated_user", ... }
+}</pre
+            >
+          </td>
+        </tr>
+        <tr>
+          <td>POST</td>
+          <td>/users/:username/myfavorites</td>
+          <td>Add a movie to a user's favorite list</td>
+          <td>
+            <pre>
+{
+  "movieId": "uuid_of_movie"
+}</pre
+            >
+          </td>
+          <td>
+            <pre>
+{
+  "message": "Movie 'Inception' has been added to favorites",
+  "myFavorites": [ { "id": "uuid_of_movie", "title": "Inception", ... } ]
+}</pre
+            >
+          </td>
+        </tr>
+        <tr>
+          <td>GET</td>
+          <td>/users/:username/myfavorites</td>
+          <td>Retrieve a user's favorite movies list</td>
+          <td>N/A</td>
+          <td>
+            <pre>
+{
+  "myFavorites": [ { "id": "uuid_of_movie", "title": "Inception", ... } ]
+}</pre
+            >
+          </td>
+        </tr>
+        <tr>
+          <td>DELETE</td>
+          <td>/users/:username/myfavorites</td>
+          <td>Remove a movie from a user's favorite list</td>
+          <td>
+            <pre>
+{
+  "movieId": "uuid_of_movie"
+}</pre
+            >
+          </td>
+          <td>
+            <pre>
+{
+  "message": "Movie with ID 'uuid_of_movie' has been removed from favorites",
+  "myFavorites": [...]
+}</pre
+            >
+          </td>
+        </tr>
+        <tr>
+          <td>DELETE</td>
+          <td>/users</td>
+          <td>Deregister a user</td>
+          <td>
+            <pre>
+{
+  "userId": "uuid_of_user"
+}</pre
+            >
+          </td>
+          <td>
+            <pre>
+{
+  "message": "User has been removed."
+}</pre
+            >
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </body>
 </html>
