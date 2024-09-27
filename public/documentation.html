@@ -8,7 +8,6 @@
       body {
         font-family: Arial, sans-serif;
         margin: 20px;
-        background-color: #f4f4f4;
       }
       table {
         width: 100%;
@@ -18,242 +17,199 @@
       table,
       th,
       td {
-        border: 1px solid #ddd;
+        border: 1px solid #333;
       }
       th,
       td {
-        padding: 12px;
+        padding: 10px;
         text-align: left;
       }
       th {
-        background-color: #f8f8f8;
+        background-color: #f4f4f4;
       }
-      h1 {
-        text-align: center;
+      code {
+        background-color: #f4f4f4;
+        padding: 2px 4px;
+        border-radius: 4px;
       }
       pre {
-        background-color: #f8f8f8;
+        background-color: #f4f4f4;
         padding: 10px;
-        border: 1px solid #ddd;
+        border-radius: 4px;
+        overflow-x: auto;
       }
     </style>
   </head>
   <body>
-    <h1>API Documentation</h1>
+    <h1>Movie API Documentation</h1>
+
+    <h2>Base URL</h2>
+    <p><code>http://localhost:8080</code></p>
+
+    <h2>Endpoints</h2>
 
     <table>
       <thead>
         <tr>
-          <th>Request Method</th>
-          <th>URL</th>
+          <th>Method</th>
+          <th>Endpoint</th>
           <th>Description</th>
-          <th>Request Body Example</th>
-          <th>Response Example</th>
         </tr>
       </thead>
       <tbody>
         <tr>
           <td>GET</td>
-          <td>/movies</td>
-          <td>Retrieve a list of all movies</td>
-          <td>N/A</td>
-          <td>
-            <pre>
-[
-  {
-    "id": "uuid",
-    "title": "Inception",
-    "description": "A thief...",
-    "genre": { ... },
-    "director": { ... }
-  }
-]</pre
-            >
-          </td>
+          <td><code>/movies</code></td>
+          <td>Returns a list of all movies.</td>
         </tr>
         <tr>
           <td>GET</td>
-          <td>/movies/:title</td>
-          <td>Retrieve detailed information about a movie by title</td>
-          <td>N/A</td>
-          <td>
-            <pre>
-{
-  "description": "A thief who...",
-  "genre": { "genreName": "Science Fiction", ... },
-  "director": "Christopher Nolan",
-  "imageUrl": "...",
-  "featured": true
-}</pre
-            >
-          </td>
+          <td><code>/movies/:Title</code></td>
+          <td>Returns details of a movie by its title.</td>
         </tr>
         <tr>
           <td>GET</td>
-          <td>/genres/:name</td>
-          <td>Retrieve genre details by name</td>
-          <td>N/A</td>
-          <td>
-            <pre>
-{
-  "genre": "Action",
-  "description": "A genre focused on..."
-}</pre
-            >
-          </td>
+          <td><code>/genres/:Name</code></td>
+          <td>Returns the genre details of a movie by name.</td>
         </tr>
         <tr>
           <td>GET</td>
-          <td>/movies/directors/:name</td>
-          <td>Retrieve details about a director by name</td>
-          <td>N/A</td>
-          <td>
-            <pre>
-{
-  "name": "Christopher Nolan",
-  "bio": "Christopher Nolan is...",
-  "birthYear": "1970"
-}</pre
-            >
-          </td>
+          <td><code>/directors/:Name</code></td>
+          <td>Returns the director's information based on their name.</td>
         </tr>
         <tr>
           <td>GET</td>
-          <td>/users</td>
-          <td>Retrieve a list of all users</td>
-          <td>N/A</td>
-          <td>
-            <pre>
-[
-  {
-    "id": "uuid",
-    "username": "john_doe",
-    "email": "john@example.com",
-    ...
-  }
-]</pre
-            >
-          </td>
+          <td><code>/actors/:Name/movies</code></td>
+          <td>Returns movies that feature the specified actor.</td>
+        </tr>
+        <tr>
+          <td>GET</td>
+          <td><code>/movies/:Title/rating</code></td>
+          <td>Returns the rating of the specified movie.</td>
+        </tr>
+        <tr>
+          <td>GET</td>
+          <td><code>/movies/:Title/releaseyear</code></td>
+          <td>Returns the release year of the specified movie.</td>
+        </tr>
+        <tr>
+          <td>GET</td>
+          <td><code>/users</code></td>
+          <td>Returns a list of all users.</td>
         </tr>
         <tr>
           <td>POST</td>
-          <td>/users</td>
-          <td>Register a new user</td>
-          <td>
-            <pre>
-{
-  "username": "new_user",
-  "password": "Password123!",
-  "email": "newuser@example.com",
-  "birthday": "1990-01-01"
-}</pre
-            >
-          </td>
-          <td>
-            <pre>
-{
-  "message": "User successfully created",
-  "user": { "id": "uuid", "username": "new_user", ... }
-}</pre
-            >
-          </td>
+          <td><code>/users</code></td>
+          <td>Creates a new user.</td>
         </tr>
         <tr>
           <td>PUT</td>
-          <td>/users/:username</td>
-          <td>Update an existing user's information</td>
-          <td>
-            <pre>
-{
-  "username": "updated_user",
-  "password": "NewPassword123",
-  "email": "updated_email@example.com",
-  "birthday": "1990-01-01"
-}</pre
-            >
-          </td>
-          <td>
-            <pre>
-{
-  "message": "User info successfully updated",
-  "user": { "username": "updated_user", ... }
-}</pre
-            >
-          </td>
+          <td><code>/users/:Username</code></td>
+          <td>Updates the user details.</td>
         </tr>
         <tr>
           <td>POST</td>
-          <td>/users/:username/myfavorites</td>
-          <td>Add a movie to a user's favorite list</td>
-          <td>
-            <pre>
-{
-  "movieId": "uuid_of_movie"
-}</pre
-            >
-          </td>
-          <td>
-            <pre>
-{
-  "message": "Movie 'Inception' has been added to favorites",
-  "myFavorites": [ { "id": "uuid_of_movie", "title": "Inception", ... } ]
-}</pre
-            >
-          </td>
+          <td><code>/users/:Username/movies/:MovieID</code></td>
+          <td>Adds a movie to the user's favorite list.</td>
         </tr>
         <tr>
           <td>GET</td>
-          <td>/users/:username/myfavorites</td>
-          <td>Retrieve a user's favorite movies list</td>
-          <td>N/A</td>
-          <td>
-            <pre>
-{
-  "myFavorites": [ { "id": "uuid_of_movie", "title": "Inception", ... } ]
-}</pre
-            >
-          </td>
+          <td><code>/users/:Username/movies</code></td>
+          <td>Returns the user's favorite movies.</td>
         </tr>
         <tr>
           <td>DELETE</td>
-          <td>/users/:username/myfavorites</td>
-          <td>Remove a movie from a user's favorite list</td>
-          <td>
-            <pre>
-{
-  "movieId": "uuid_of_movie"
-}</pre
-            >
-          </td>
-          <td>
-            <pre>
-{
-  "message": "Movie with ID 'uuid_of_movie' has been removed from favorites",
-  "myFavorites": [...]
-}</pre
-            >
-          </td>
+          <td><code>/users/:Username/movies/:MovieID</code></td>
+          <td>Removes a movie from the user's favorite list.</td>
         </tr>
         <tr>
           <td>DELETE</td>
-          <td>/users</td>
-          <td>Deregister a user</td>
-          <td>
-            <pre>
-{
-  "userId": "uuid_of_user"
-}</pre
-            >
-          </td>
-          <td>
-            <pre>
-{
-  "message": "User has been removed."
-}</pre
-            >
-          </td>
+          <td><code>/users/:Username</code></td>
+          <td>Deletes a user.</td>
         </tr>
       </tbody>
     </table>
+
+    <h2>Request and Response Examples</h2>
+
+    <h3>GET /genres/:Name</h3>
+    <p>Returns the genre details of a movie by name.</p>
+    <h4><strong>Response Example:</strong></h4>
+    <pre>
+  {
+    "Name": "Action",
+    "Description": "Action movies feature fast-paced sequences, physical stunts, and high-intensity scenes."
+  }
+    </pre>
+
+    <h3>GET /directors/:Name</h3>
+    <p>Returns the director details by name.</p>
+    <h4><strong>Response Example:</strong></h4>
+    <pre>
+  {
+    "_id": "603d0e21718e7315b8e3f8b1",
+    "Name": "Christopher Nolan",
+    "Bio": "Christopher Nolan is a renowned director known for his work in drama and action movies."
+  }
+    </pre>
+    <h3>Get Movie by Title (GET /movies/:Title)</h3>
+    <p><strong>Response Example:</strong></p>
+    <pre>
+{
+  "_id": "603d0b43718e7315b8e3f8a2",
+  "Title": "Movie Title",
+  "Description": "Movie Description",
+  "Genre": {
+    "Name": "Genre Name",
+    "Description": "Genre Description"
+  },
+  "Director": {
+    "Name": "Director Name",
+    "Bio": "Director Bio",
+    "Birth": "1960-01-01"
+  },
+  "Actors": ["Actor 1", "Actor 2"],
+  "ReleaseYear": "1999",
+  "Rating": 8.5
+}
+  </pre
+    >
+    <h3>User Registration (POST /users)</h3>
+    <p><strong>Request Body Example:</strong></p>
+    <pre>
+{
+  "Username": "username",
+  "Password": "password",
+  "Email": "user@example.com",
+  "Birth_date": "1990-01-01"
+}
+  </pre
+    >
+    <p><strong>Response Example:</strong></p>
+    <pre>
+{
+  "_id": "603d0b43718e7315b8e3f8a2",
+  "Username": "username",
+  "Email": "user@example.com",
+  "Birth_date": "1990-01-01",
+  "FavoriteMovies": []
+}
+  </pre
+    >
+
+    <h3>Get All Users (GET /users)</h3>
+    <p><strong>Response Example:</strong></p>
+    <pre>
+[
+  {
+    "_id": "603d0c7d718e7315b8e3f8a4",
+    "Username": "username",
+    "Email": "user@example.com",
+    "FavoriteMovies": ["603d0b43718e7315b8e3f8a2"]
+  },
+  ...
+]
+  </pre
+    >
   </body>
 </html>
