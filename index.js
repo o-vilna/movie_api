@@ -16,6 +16,9 @@ const cors = require("cors");
 
 const { check, validationResult } = require("express-validator");
 
+// Allowed origins for CORS
+let allowedOrigins = ["http://localhost:8080", "http://testsite.com"];
+
 // Middleware Setup
 app.use(express.static("public"));
 app.use(morgan("common"));
@@ -24,6 +27,7 @@ app.use(
     extended: true,
   })
 );
+
 app.use(
   cors({
     origin: (origin, callback) => {
