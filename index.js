@@ -28,7 +28,10 @@ app.use(
   })
 );
 
-app.use(
+app.use(cors());
+
+//Only certain origins
+/* app.use(
   cors({
     origin: (origin, callback) => {
       if (!origin) return callback(null, true);
@@ -41,7 +44,7 @@ app.use(
       return callback(null, true);
     },
   })
-);
+); */
 
 let auth = require("./auth")(app);
 const passport = require("passport");
@@ -231,7 +234,7 @@ app.post(
         } else {
           Users.create({
             Username: req.body.Username,
-            Password: req.body.Password,
+            Password: hashedPassword,
             Email: req.body.Email,
             Birth_date: req.body.Birthday,
           })
@@ -259,14 +262,21 @@ app.put(
     if (req.user.Username !== req.params.Username) {
       return res.status(400).send("Permission denied");
     }
+    let updatedFields = {
+      Username: req.body.Username,
+      Email: req.body.Email,
+      Birthday: req.body.Birthday,
+    };
+
+    if (req.body.Password) {
+      updatedFields.Password = Users.hashPassword(req.body.Password);
+    }
+
     await Users.findOneAndUpdate(
       { Username: req.params.Username },
       {
         $set: {
-          Username: req.body.Username,
-          Password: req.body.Password,
-          Email: req.body.Email,
-          Birthday: req.body.Birthday,
+          updatedFields,
         },
       },
       { new: true }
