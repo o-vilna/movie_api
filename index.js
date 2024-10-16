@@ -267,9 +267,9 @@ app.put(
       "Username contains non alphanumeric characters - not allowed."
     ).isAlphanumeric(),
     check("Email", "Email does not appear to be valid").isEmail(),
-    check("Birthday", "Invalid date, use format YYYY-MM-DD").matches(
-      /^\d{4}-\d{2}-\d{2}$/
-    ),
+    check("Birthday", "Invalid date, use format YYYY-MM-DD")
+      .optional()
+      .matches(/^\d{4}-\d{2}-\d{2}$/),
     check("Password", "Password must be at least 6 characters")
       .optional()
       .isLength({ min: 6 }),
@@ -301,7 +301,6 @@ app.put(
     };
 
     if (req.body.Password) {
-      // Always re-hash password if provided in the request body
       updatedFields.Password = Users.hashPassword(req.body.Password);
     }
 
