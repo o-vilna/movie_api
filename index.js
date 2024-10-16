@@ -260,36 +260,55 @@ app.post(
 app.put(
   "/users/:Username",
   passport.authenticate("jwt", { session: false }),
+  [
+    check("Username", "Username is required").isLength({ min: 5 }),
+    check(
+      "Username",
+      "Username contains non alphanumeric characters - not allowed."
+    ).isAlphanumeric(),
+    check("Password", "Password is required").not().isEmpty(),
+    check("Email", "Email does not appear to be valid").isEmail(),
+    check("Birthday", "Invalid date, use format YYYY-MM-DD").matches(
+      /^\d{4}-\d{2}-\d{2}$/
+    ),
+  ],
   async (req, res) => {
+    // check the validation object for errors
+    let errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    let hashedPassword = req.body.Password
+      ? Users.hashPassword(req.body.Password)
+      : req.user.Password;
+
     if (req.user.Username !== req.params.Username) {
       return res.status(400).send("Permission denied");
     }
-    let updatedFields = {
-      Username: req.body.Username,
-      Email: req.body.Email,
-      Birthday: req.body.Birthday,
-    };
-
-    if (req.body.Password) {
-      updatedFields.Password = Users.hashPassword(req.body.Password);
-    }
-
-    await Users.findOneAndUpdate(
-      { Username: req.params.Username },
-      {
-        $set: {
-          updatedFields,
+    try {
+      let updatedUser = await Users.findOneAndUpdate(
+        { Username: req.params.Username },
+        {
+          $set: {
+            Username: req.body.Username,
+            Password: hashedPassword,
+            Email: req.body.Email,
+            Birthday: req.body.Birthday,
+          },
         },
-      },
-      { new: true }
-    )
-      .then((updatedUser) => {
-        res.json(updatedUser);
-      })
-      .catch((err) => {
-        console.error(err);
-        res.status(500).send("Error:" + err);
-      });
+        { new: true }
+      );
+
+      if (!updatedUser) {
+        return res.status(404).send("User not found");
+      }
+
+      res.json(updatedUser);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send("Error: " + err);
+    }
   }
 );
 
