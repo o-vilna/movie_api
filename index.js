@@ -268,11 +268,11 @@ app.put(
     ).isAlphanumeric(),
     check("Email", "Email does not appear to be valid").isEmail(),
     check("Birthday", "Invalid date, use format YYYY-MM-DD").matches(
-      /^\d{4}-\d{2}-\d{2}$/,
-      check("Password", "Password must be at least 6 characters")
-        .optional()
-        .isLength({ min: 6 })
+      /^\d{4}-\d{2}-\d{2}$/
     ),
+    check("Password", "Password must be at least 6 characters")
+      .optional()
+      .isLength({ min: 6 }),
   ],
   async (req, res) => {
     // check the validation object for errors
