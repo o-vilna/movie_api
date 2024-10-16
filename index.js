@@ -266,7 +266,6 @@ app.put(
       "Username",
       "Username contains non alphanumeric characters - not allowed."
     ).isAlphanumeric(),
-    check("Password", "Password is required").not().isEmpty(),
     check("Email", "Email does not appear to be valid").isEmail(),
     check("Birthday", "Invalid date, use format YYYY-MM-DD").matches(
       /^\d{4}-\d{2}-\d{2}$/
@@ -279,24 +278,25 @@ app.put(
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });
     }
-    let hashedPassword = req.body.Password
-      ? Users.hashPassword(req.body.Password)
-      : req.user.Password;
 
     if (req.user.Username !== req.params.Username) {
       return res.status(400).send("Permission denied");
     }
+    let updatedFields = {
+      Username: req.body.Username,
+      Email: req.body.Email,
+      Birth_date: req.body.Birthday,
+    };
+
+    // Only hash the password if it's provided in the request
+    if (req.body.Password) {
+      updatedFields.Password = Users.hashPassword(req.body.Password);
+    }
+
     try {
       let updatedUser = await Users.findOneAndUpdate(
         { Username: req.params.Username },
-        {
-          $set: {
-            Username: req.body.Username,
-            Password: hashedPassword,
-            Email: req.body.Email,
-            Birth_date: req.body.Birthday,
-          },
-        },
+        { $set: updatedFields },
         { new: true }
       );
 
