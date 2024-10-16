@@ -268,7 +268,10 @@ app.put(
     ).isAlphanumeric(),
     check("Email", "Email does not appear to be valid").isEmail(),
     check("Birthday", "Invalid date, use format YYYY-MM-DD").matches(
-      /^\d{4}-\d{2}-\d{2}$/
+      /^\d{4}-\d{2}-\d{2}$/,
+      check("Password", "Password must be at least 6 characters")
+        .optional()
+        .isLength({ min: 6 })
     ),
   ],
   async (req, res) => {
@@ -279,31 +282,37 @@ app.put(
       return res.status(422).json({ errors: errors.array() });
     }
 
+    // Get user from DB
+    const currentUser = await Users.findOne({ Username: req.params.Username });
+
+    if (!currentUser) {
+      return res.status(404).send("User not found");
+    }
+    // When get a new value for the password field
+    let hashedPassword;
+    if (req.body.Password && req.body.Password !== currentUser.Password) {
+      hashedPassword = Users.hashPassword(req.body.Password);
+    } else {
+      hashedPassword = currentUser.Password; // When the old value of password
+    }
+
     if (req.user.Username !== req.params.Username) {
       return res.status(400).send("Permission denied");
-    }
-    let updatedFields = {
-      Username: req.body.Username,
-      Email: req.body.Email,
-      Birth_date: req.body.Birthday,
-    };
-
-    // Only hash the password if it's provided in the request
-    if (req.body.Password) {
-      updatedFields.Password = Users.hashPassword(req.body.Password);
     }
 
     try {
       let updatedUser = await Users.findOneAndUpdate(
         { Username: req.params.Username },
-        { $set: updatedFields },
+        {
+          $set: {
+            Username: req.body.Username,
+            Password: hashedPassword,
+            Email: req.body.Email,
+            Birth_date: req.body.Birthday,
+          },
+        },
         { new: true }
       );
-
-      if (!updatedUser) {
-        return res.status(404).send("User not found");
-      }
-
       res.json(updatedUser);
     } catch (err) {
       console.error(err);
@@ -311,7 +320,6 @@ app.put(
     }
   }
 );
-
 //Add a movie to a user's favorite list
 app.post(
   "/users/:Username/movies/:MovieID",
