@@ -288,31 +288,30 @@ app.put(
     if (!currentUser) {
       return res.status(404).send("User not found");
     }
-    // When get a new value for the password field
-    let hashedPassword;
-    if (req.body.Password && req.body.Password !== currentUser.Password) {
-      hashedPassword = Users.hashPassword(req.body.Password);
-    } else {
-      hashedPassword = currentUser.Password; // When the old value of password
-    }
 
     if (req.user.Username !== req.params.Username) {
       return res.status(400).send("Permission denied");
     }
 
+    // Update password only if it's provided in the request
+    let updatedFields = {
+      Username: req.body.Username,
+      Email: req.body.Email,
+      Birth_date: req.body.Birthday,
+    };
+
+    if (req.body.Password) {
+      // Always re-hash password if provided in the request body
+      updatedFields.Password = Users.hashPassword(req.body.Password);
+    }
+
     try {
       let updatedUser = await Users.findOneAndUpdate(
         { Username: req.params.Username },
-        {
-          $set: {
-            Username: req.body.Username,
-            Password: hashedPassword,
-            Email: req.body.Email,
-            Birth_date: req.body.Birthday,
-          },
-        },
+        { $set: updatedFields },
         { new: true }
       );
+
       res.json(updatedUser);
     } catch (err) {
       console.error(err);
