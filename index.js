@@ -371,7 +371,7 @@ app.delete(
   "/users/:Username/movies/:MovieID",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
-    Users.findOneAndUpdate(
+    await Users.findOneAndUpdate(
       { Username: req.params.Username },
       { $pull: { FavoriteMovies: req.params.MovieID } },
       { new: true }
@@ -383,11 +383,10 @@ app.delete(
             .send(`${req.params.Username} User was not found`);
         }
 
-        res
-          .status(200)
-          .send(
-            `Movie with ID ${req.params.MovieID} has been removed from ${req.params.Username}'s favorites.`
-          );
+        res.status(200).json({
+          Username: user.Username,
+          FavoriteMovies: user.FavoriteMovies || [], // Переконайтесь, що поле називається 'favoriteMovies'
+        });
       })
       .catch((err) => {
         console.error(err);
