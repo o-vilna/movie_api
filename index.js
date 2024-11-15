@@ -56,7 +56,6 @@ app.use(methodOverride());
 // Get all movies
 app.get(
   "/movies",
-  passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     await Movies.find()
       .then((movies) => {
@@ -72,7 +71,6 @@ app.get(
 // Get movie by title
 app.get(
   "/movies/:Title",
-  passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     await Movies.findOne({ Title: req.params.Title })
       .then((title) => {
@@ -155,7 +153,6 @@ app.get(
 // Get movies by rating
 app.get(
   "/movies/:Title/rating",
-  passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     await Movies.findOne({ Title: req.params.Title })
       .then((movies) => {
@@ -174,7 +171,6 @@ app.get(
 // Get movies by ReleaseYear
 app.get(
   "/movies/:Title/releaseyear",
-  passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     await Movies.findOne({ Title: req.params.Title })
       .then((movies) => {
