@@ -16,6 +16,9 @@ const cors = require("cors");
 
 const { check, validationResult } = require("express-validator");
 
+// Allowed origins for CORS
+let allowedOrigins = ["http://localhost:8080", "http://testsite.com"];
+
 // Middleware Setup
 app.use(express.static("public"));
 app.use(morgan("common"));
@@ -24,7 +27,11 @@ app.use(
     extended: true,
   })
 );
-app.use(
+
+app.use(cors());
+
+//Only certain origins
+/* app.use(
   cors({
     origin: (origin, callback) => {
       if (!origin) return callback(null, true);
@@ -37,7 +44,7 @@ app.use(
       return callback(null, true);
     },
   })
-);
+); */
 
 let auth = require("./auth")(app);
 const passport = require("passport");
@@ -220,6 +227,8 @@ app.post(
       return res.status(422).json({ errors: errors.array() });
     }
     let hashedPassword = Users.hashPassword(req.body.Password);
+
+    console.log("Hashed password:", hashedPassword);
     await Users.findOne({ Username: req.body.Username })
       .then((user) => {
         if (user) {
@@ -227,7 +236,7 @@ app.post(
         } else {
           Users.create({
             Username: req.body.Username,
-            Password: req.body.Password,
+            Password: hashedPassword,
             Email: req.body.Email,
             Birth_date: req.body.Birthday,
           })
@@ -251,32 +260,64 @@ app.post(
 app.put(
   "/users/:Username",
   passport.authenticate("jwt", { session: false }),
+  [
+    check("Username", "Username is required").isLength({ min: 5 }),
+    check(
+      "Username",
+      "Username contains non alphanumeric characters - not allowed."
+    ).isAlphanumeric(),
+    check("Email", "Email does not appear to be valid").isEmail(),
+    check("Birthday", "Invalid date, use format YYYY-MM-DD")
+      .optional()
+      .matches(/^\d{4}-\d{2}-\d{2}$/),
+    check("Password", "Password must be at least 6 characters")
+      .optional()
+      .isLength({ min: 6 }),
+  ],
   async (req, res) => {
+    // check the validation object for errors
+    let errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+
+    // Get user from DB
+    const currentUser = await Users.findOne({ Username: req.params.Username });
+
+    if (!currentUser) {
+      return res.status(404).send("User not found");
+    }
+
     if (req.user.Username !== req.params.Username) {
       return res.status(400).send("Permission denied");
     }
-    await Users.findOneAndUpdate(
-      { Username: req.params.Username },
-      {
-        $set: {
-          Username: req.body.Username,
-          Password: req.body.Password,
-          Email: req.body.Email,
-          Birthday: req.body.Birthday,
-        },
-      },
-      { new: true }
-    )
-      .then((updatedUser) => {
-        res.json(updatedUser);
-      })
-      .catch((err) => {
-        console.error(err);
-        res.status(500).send("Error:" + err);
-      });
+
+    // Update password only if it's provided in the request
+    let updatedFields = {
+      Username: req.body.Username,
+      Email: req.body.Email,
+      Birth_date: req.body.Birthday,
+    };
+
+    if (req.body.Password) {
+      updatedFields.Password = Users.hashPassword(req.body.Password);
+    }
+
+    try {
+      let updatedUser = await Users.findOneAndUpdate(
+        { Username: req.params.Username },
+        { $set: updatedFields },
+        { new: true }
+      );
+
+      res.json(updatedUser);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send("Error: " + err);
+    }
   }
 );
-
 //Add a movie to a user's favorite list
 app.post(
   "/users/:Username/movies/:MovieID",
@@ -330,7 +371,7 @@ app.delete(
   "/users/:Username/movies/:MovieID",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
-    Users.findOneAndUpdate(
+    await Users.findOneAndUpdate(
       { Username: req.params.Username },
       { $pull: { FavoriteMovies: req.params.MovieID } },
       { new: true }
@@ -342,11 +383,10 @@ app.delete(
             .send(`${req.params.Username} User was not found`);
         }
 
-        res
-          .status(200)
-          .send(
-            `Movie with ID ${req.params.MovieID} has been removed from ${req.params.Username}'s favorites.`
-          );
+        res.status(200).json({
+          Username: user.Username,
+          FavoriteMovies: user.FavoriteMovies || [], // Переконайтесь, що поле називається 'favoriteMovies'
+        });
       })
       .catch((err) => {
         console.error(err);
@@ -395,4 +435,9 @@ const port = process.env.PORT || 8080;
 app.listen(port, "0.0.0.0", () => {
   console.log("Listening on Port " + port);
 });
-mongoose.connect("mongodb://localhost:27017/mfDB", {});
+//mongoose.connect("mongodb://localhost:27017/mfDB", {});
+
+mongoose.connect(process.env.CONNECTION_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
