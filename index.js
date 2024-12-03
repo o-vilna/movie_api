@@ -1,31 +1,32 @@
 const express = require("express");
-morgan = require("morgan");
+const morgan = require("morgan");
 const bodyParser = require("body-parser");
-methodOverride = require("method-override");
-
-const app = express();
-
+const methodOverride = require("method-override");
+const cors = require("cors");
+const passport = require("passport");
 const mongoose = require("mongoose");
+const { check, validationResult } = require("express-validator");
+
 const Models = require("./models.js");
+let auth = require("./auth")(app);
+require("./passport");
 
 const Movies = Models.Movie;
 const Users = Models.User;
 const Actors = Models.Actor;
 
-const cors = require("cors");
-
-const { check, validationResult } = require("express-validator");
+const app = express();
 
 // Allowed origins for CORS
-let allowedOrigins = ["http://localhost:8080", "http://testsite.com","http://localhost:1234"]
+//let allowedOrigins = ["http://localhost:8080", "http://testsite.com","http://localhost:1234"]
 
 app.use(express.static("public"));
 app.use(morgan("common"));
-app.use(
-  bodyParser.urlencoded({
-    extended: true,
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true,
   })
 );
+app.use(methodOverride());
 
 app.use(cors());
 
@@ -44,13 +45,6 @@ app.use(cors());
     },
   })
 ); */
-
-let auth = require("./auth")(app);
-const passport = require("passport");
-require("./passport");
-
-app.use(bodyParser.json());
-app.use(methodOverride());
 
 // Get all movies
 app.get(
