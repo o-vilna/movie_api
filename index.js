@@ -8,17 +8,12 @@ const mongoose = require("mongoose");
 const { check, validationResult } = require("express-validator");
 
 const Models = require("./models.js");
-let auth = require("./auth")(app);
-require("./passport");
-
 const Movies = Models.Movie;
 const Users = Models.User;
 const Actors = Models.Actor;
 
 const app = express();
-
-// Allowed origins for CORS
-//let allowedOrigins = ["http://localhost:8080", "http://testsite.com","http://localhost:1234"]
+require("./passport");
 
 app.use(express.static("public"));
 app.use(morgan("common"));
@@ -29,6 +24,11 @@ app.use(bodyParser.urlencoded({extended: true,
 app.use(methodOverride());
 
 app.use(cors());
+
+let auth = require("./auth")(app);
+
+// Allowed origins for CORS
+//let allowedOrigins = ["http://localhost:8080", "http://testsite.com","http://localhost:1234"]
 
 //Only certain origins
 /* app.use(
