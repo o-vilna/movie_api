@@ -28,10 +28,10 @@ app.use(cors());
 let auth = require("./auth")(app);
 
 // Allowed origins for CORS
-//let allowedOrigins = ["http://localhost:8080", "http://testsite.com","http://localhost:1234"]
+let allowedOrigins = ["http://localhost:8080", "http://https://m-flixx.netlify.app","http://localhost:1234"]
 
 //Only certain origins
-/* app.use(
+app.use(
   cors({
     origin: (origin, callback) => {
       if (!origin) return callback(null, true);
@@ -44,7 +44,7 @@ let auth = require("./auth")(app);
       return callback(null, true);
     },
   })
-); */
+);
 
 // Get all movies
 app.get(
