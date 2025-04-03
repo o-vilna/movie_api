@@ -1,0 +1,43 @@
+/**
+ * Styles for notification components
+ */
+
+.notifications-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+.notification {
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-width: 300px;
+}
+
+.notification-success {
+  background-color: #4caf50;
+  color: white;
+}
+
+.notification-error {
+  background-color: #f44336;
+  color: white;
+}
+
+.notification-info {
+  background-color: #2196f3;
+  color: white;
+}
+
+.notification-close {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 20px;
+} 
