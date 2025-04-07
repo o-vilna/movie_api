@@ -1,3 +1,8 @@
+/**
+ * @module passport
+ * @description Authentication module using Passport strategies
+ */
+
 const passport = require("passport"),
   LocalStrategy = require("passport-local").Strategy,
   Models = require("./models.js"),
@@ -7,6 +12,13 @@ let Users = Models.User,
   JWTStrategy = passportJWT.Strategy,
   ExtractJWT = passportJWT.ExtractJwt;
 
+/**
+ * Local authentication strategy
+ * @name localStrategy
+ * @memberof module:passport
+ * @function
+ * @description Authenticates users using username and password
+ */
 passport.use(
   new LocalStrategy(
     {
@@ -41,6 +53,13 @@ passport.use(
   )
 );
 
+/**
+ * JWT authentication strategy
+ * @name jwtStrategy
+ * @memberof module:passport
+ * @function
+ * @description Authenticates users using JWT tokens
+ */
 passport.use(
   new JWTStrategy(
     {
@@ -58,3 +77,28 @@ passport.use(
     }
   )
 );
+
+/**
+ * Passport configuration object with strategies
+ * @type {Object}
+ */
+module.exports = passport;
+
+/**
+ * Local authentication function
+ * @function authenticate
+ * @memberof module:passport
+ * @description Authenticates user credentials against database
+ * @param {string} username - The username
+ * @param {string} password - The password
+ * @returns {User|boolean} User object if authentication successful, false otherwise
+ */
+
+/**
+ * JWT authentication function
+ * @function authenticateJWT
+ * @memberof module:passport
+ * @description Authenticates JWT tokens
+ * @param {Object} payload - JWT payload
+ * @returns {User|Error} User object if authentication successful, error otherwise
+ */

@@ -4,8 +4,9 @@ import { updateUserProfile } from '../services/userService';
 import { clearStorage } from '../utils/storageUtils';
 
 /**
- * Component for updating user profile information
  * @component
+ * @memberof Components
+ * @description Component for updating and deleting user profile information
  */
 const ProfileUpdateForm = () => {
   const navigate = useNavigate();
@@ -83,6 +84,37 @@ const ProfileUpdateForm = () => {
     }));
   };
 
+  /**
+   * Handles user profile deletion
+   * @function
+   * @memberof Components.ProfileUpdateForm
+   * @description Deletes the user's profile and logs them out
+   */
+  const handleDeleteProfile = async () => {
+    if (window.confirm('Are you sure you want to delete your profile? This action cannot be undone.')) {
+      const token = localStorage.getItem('token');
+      const currentUsername = localStorage.getItem('user');
+      
+      try {
+        const response = await fetch(`/users/${currentUsername}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
+        if (response.ok) {
+          showNotification('Profile deleted successfully. You will be logged out.', 'success');
+          handleAutoLogout();
+        } else {
+          throw new Error('Failed to delete profile');
+        }
+      } catch (error) {
+        showNotification(error.message, 'error');
+      }
+    }
+  };
+
   return (
     <form onSubmit={handleSubmit}>
       <div>
@@ -120,7 +152,12 @@ const ProfileUpdateForm = () => {
         />
       </div>
 
-      <button type="submit">Update Profile</button>
+      <div className="button-group">
+        <button type="submit">Update Profile</button>
+        <button type="button" onClick={handleDeleteProfile} className="delete-button">
+          Delete Profile
+        </button>
+      </div>
     </form>
   );
 };

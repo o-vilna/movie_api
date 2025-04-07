@@ -1,3 +1,13 @@
+/**
+ * @file index.js is the main entry point for the Movie API
+ * @author Olha Tsurenko
+ * @see {@link https://github.com/o-vilna/movie_api|GitHub Repository}
+ */
+/**
+ * @module index
+ * @description Main module for the movie API handling all routes and middleware configurations
+ */
+
 const express = require("express");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
@@ -12,9 +22,17 @@ const Movies = Models.Movie;
 const Users = Models.User;
 const Actors = Models.Actor;
 
+/**
+ * Express application instance
+ * @type {object}
+ */
 const app = express();
 require("./passport");
 
+/**
+ * Configure middleware
+ * @function
+ */
 app.use(express.static("public"));
 app.use(morgan("common"));
 app.use(bodyParser.json());
@@ -30,14 +48,14 @@ let auth = require("./auth")(app);
 // Allowed origins for CORS
 let allowedOrigins = ["http://localhost:8080", "http://https://m-flixx.netlify.app","http://localhost:1234"]
 
-//Only certain origins
+// Only certain origins
 app.use(
   cors({
     origin: (origin, callback) => {
       if (!origin) return callback(null, true);
       if (allowedOrigins.indexOf(origin) === -1) {
         let message =
-          "The The CORS policy for this application doesn’t allow access from origin" +
+          "The The CORS policy for this application doesn't allow access from origin" +
           origin;
         return callback(new Error(message), false);
       }
@@ -46,14 +64,23 @@ app.use(
   })
 );
 
-// Get all movies
+/**
+ * @name GetAllMovies
+ * @function
+ * @memberof module:index
+ * @description Get all movies
+ * @route {GET} /movies
+ * @authentication This route requires JWT authentication.
+ * @returns {Array.<Movie>} 200 - An array of movies
+ * @returns {Error} 500 - Internal server error
+ */
 app.get(
   "/movies",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     await Movies.find()
       .then((movies) => {
-        res.status(201).json(movies);
+        res.status(200).json(movies);
       })
       .catch((error) => {
         console.error(error);
@@ -62,14 +89,26 @@ app.get(
   }
 );
 
-// Get movie by title
+/**
+ * @name GetMovieByTitle
+ * @function
+ * @memberof module:index
+ * @description Get movie by title
+ * @param {string} Title - The title of the movie
+ * @returns {Movie} 200 - A movie object
+ * @returns {Error} 404 - Movie not found
+ * @returns {Error} 500 - Internal server error
+ */
 app.get(
   "/movies/:Title",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     await Movies.findOne({ Title: req.params.Title })
       .then((title) => {
-        res.status(201).json(title);
+        if (!title) {
+          return res.status(404).send("Movie not found.");
+        }
+        res.status(200).json(title);
       })
       .catch((err) => {
         console.error(err);
@@ -78,7 +117,16 @@ app.get(
   }
 );
 
-// Get genre by name
+/**
+ * @name GetGenreByName
+ * @function
+ * @memberof module:index
+ * @description Get genre by name
+ * @param {string} Name - The name of the genre
+ * @returns {Object} 200 - Genre object
+ * @returns {Error} 404 - No movies found for this genre
+ * @returns {Error} 500 - Internal server error
+ */
 app.get(
   "/genres/:Name",
   passport.authenticate("jwt", { session: false }),
@@ -88,7 +136,7 @@ app.get(
         if (movies.length === 0) {
           return res.status(404).send("No movies found for this genre.");
         }
-        res.status(210).json(movies.Genre);
+        res.status(200).json(movies.Genre);
       })
       .catch((err) => {
         console.error(err);
@@ -97,7 +145,16 @@ app.get(
   }
 );
 
-// Get director by name
+/**
+ * @name GetDirectorByName
+ * @function
+ * @memberof module:index
+ * @description Get director by name
+ * @param {string} Name - The name of the director
+ * @returns {Object} 200 - Director object
+ * @returns {Error} 404 - Director not found
+ * @returns {Error} 500 - Internal server error
+ */
 app.get(
   "/directors/:Name",
   passport.authenticate("jwt", { session: false }),
@@ -107,7 +164,7 @@ app.get(
         if (!movies) {
           return res.status(404).send("Director not found.");
         }
-        res.status(201).json(movies.Director);
+        res.status(200).json(movies.Director);
       })
       .catch((err) => {
         console.error(err);
@@ -116,7 +173,16 @@ app.get(
   }
 );
 
-// Get movies by actor name
+/**
+ * @name GetMoviesByActor
+ * @function
+ * @memberof module:index
+ * @description Get movies by actor name
+ * @param {string} Name - The name of the actor
+ * @returns {Object} 200 - Movies associated with the actor
+ * @returns {Error} 404 - Actor not found or no movies found for this actor
+ * @returns {Error} 500 - Internal server error
+ */
 app.get(
   "/actors/:Name/movies",
   passport.authenticate("jwt", { session: false }),
@@ -132,7 +198,7 @@ app.get(
             return res.status(404).send("No movies found for this actor.");
           }
 
-          res.status(201).json({
+          res.status(200).json({
             actor: actor.Name,
             movies: movies,
           });
@@ -145,7 +211,16 @@ app.get(
   }
 );
 
-// Get movies by rating
+/**
+ * @name GetMovieRating
+ * @function
+ * @memberof module:index
+ * @description Get movie rating by title
+ * @param {string} Title - The title of the movie
+ * @returns {Object} 200 - Movie rating information
+ * @returns {Error} 404 - Movie not found
+ * @returns {Error} 500 - Internal server error
+ */
 app.get(
   "/movies/:Title/rating",
   passport.authenticate("jwt", { session: false }),
@@ -164,7 +239,16 @@ app.get(
   }
 );
 
-// Get movies by ReleaseYear
+/**
+ * @name GetMovieReleaseYear
+ * @function
+ * @memberof module:index
+ * @description Get movie release year by title
+ * @param {string} Title - The title of the movie
+ * @returns {Object} 200 - Movie release year information
+ * @returns {Error} 404 - Movie not found
+ * @returns {Error} 500 - Internal server error
+ */
 app.get(
   "/movies/:Title/releaseyear",
   passport.authenticate("jwt", { session: false }),
@@ -186,7 +270,14 @@ app.get(
   }
 );
 
-// Get list of all users
+/**
+ * @name GetAllUsers
+ * @function
+ * @memberof module:index
+ * @description Get list of all users
+ * @returns {Array.<User>} 200 - An array of users
+ * @returns {Error} 500 - Internal server error
+ */
 app.get(
   "/users",
   passport.authenticate("jwt", { session: false }),
@@ -202,7 +293,17 @@ app.get(
   }
 );
 
-// User registration
+/**
+ * @name RegisterUser
+ * @function
+ * @memberof module:index
+ * @description User registration
+ * @param {Object} userData - User data including username, password, and email
+ * @returns {User} 201 - Created user
+ * @returns {Error} 400 - User already exists
+ * @returns {Error} 422 - Validation error
+ * @returns {Error} 500 - Internal server error
+ */
 app.post(
   "/users",
   [
@@ -249,7 +350,18 @@ app.post(
   }
 );
 
-// Update user information
+/**
+ * @name UpdateUser
+ * @function
+ * @memberof module:index
+ * @description Update user information
+ * @param {string} Username - The username
+ * @param {Object} userData - The user data to update
+ * @returns {User} 200 - Updated user
+ * @returns {Error} 404 - User not found
+ * @returns {Error} 422 - Validation error
+ * @returns {Error} 500 - Internal server error
+ */
 app.put(
   "/users/:Username",
   passport.authenticate("jwt", { session: false }),
@@ -311,7 +423,17 @@ app.put(
     }
   }
 );
-//Add a movie to a user's favorite list
+
+/**
+ * @name AddMovieToFavorites
+ * @function
+ * @memberof module:index
+ * @description Add a movie to a user's favorite list
+ * @param {string} Username - The username
+ * @param {string} MovieID - The movie ID
+ * @returns {User} 201 - Updated user with the movie added to favorites
+ * @returns {Error} 500 - Internal server error
+ */
 app.post(
   "/users/:Username/movies/:MovieID",
   passport.authenticate("jwt", { session: false }),
@@ -434,3 +556,9 @@ mongoose.connect(process.env.CONNECTION_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
+
+/**
+ * Export Express app
+ * @type {object}
+ */
+module.exports = app;

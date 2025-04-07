@@ -1,6 +1,7 @@
 /**
- * Component for displaying notifications
  * @component
+ * @memberof Components
+ * @description Component for displaying notifications
  */
 const Notification = ({ message, type, onClose }) => {
   /**
